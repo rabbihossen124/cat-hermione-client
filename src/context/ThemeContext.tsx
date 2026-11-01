@@ -24,7 +24,9 @@ function subscribe(callback: () => void) {
 function getClientSnapshot(): Theme {
   try {
     const saved = localStorage.getItem("unityaid-theme");
-    return saved === "dark" ? "dark" : "light";
+    if (saved === "dark") return "dark";
+    if (saved === "light") return "light";
+    return "light";
   } catch {
     return "light";
   }
