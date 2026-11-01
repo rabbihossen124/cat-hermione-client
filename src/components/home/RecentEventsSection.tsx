@@ -8,25 +8,25 @@ import EventCard, { EventItem } from "@/components/events/EventCard";
 const fallbackEvents: EventItem[] = [
   {
     _id: "demo-1",
-    title: "Winter Clothes Distribution – Gulshan, Dhaka",
+    title: "Winter Clothes & Blanket Drive",
     description:
-      "Collecting and distributing warm jackets, sweaters, and shawls to underprivileged families and street-dwellers ahead of severe winter cold.",
+      "Providing warm blankets and essential winter wear to vulnerable families before the seasonal cold peak.",
     eventType: "Donation",
     thumbnail:
       "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=800&q=80",
     location: "Gulshan, Dhaka",
     eventDate: "2026-11-05T10:00:00.000Z",
-    creatorName: "Rahim khan",
+    creatorName: "Rahim Khan",
   },
   {
     _id: "demo-2",
-    title: "Street Children Book & Education Stationery Drive",
+    title: "Children Education & Stationery Drive",
     description:
-      "Distributing basic alphabetic books, notebooks, bags, and art supplies to encourage non-formal education for informal street children.",
+      "Distributing textbooks, notebooks, and creative art kits to support informal youth literacy.",
     eventType: "Education",
     thumbnail:
       "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=800&q=80",
-    location: "new market, khulna",
+    location: "New Market, Khulna",
     eventDate: "2026-12-01T11:00:00.000Z",
     creatorName: "Nusrat Jahan",
   },
@@ -59,14 +59,13 @@ export default function RecentEventsSection() {
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div className="space-y-2">
           <span className="text-xs font-bold uppercase tracking-wider text-[var(--primary)]">
-            Act Now
+            Verified Social Drives
           </span>
           <h2 className="text-2xl sm:text-4xl font-black text-[var(--foreground)] tracking-tight">
-            Recent Upcoming Community Drives
+            Upcoming Community Drives
           </h2>
           <p className="text-xs sm:text-sm text-[var(--muted)] max-w-xl">
-            Join nearby volunteer programs organized by citizens right here in Dhaka.
-            Every hand counts in creating a compassionate city.
+            Explore active volunteer campaigns and join grassroots initiatives making a tangible difference.
           </p>
         </div>
 

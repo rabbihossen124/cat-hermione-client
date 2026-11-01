@@ -8,26 +8,26 @@ import { EventItem } from "@/components/events/EventCard";
 const fallbackMap: Record<string, EventItem> = {
   "demo-1": {
     _id: "demo-1",
-    title: "Winter Clothes Distribution – Gulshan, Dhaka",
+    title: "Winter Clothes & Blanket Drive",
     description:
-      "Collecting and distributing warm jackets, sweaters, and shawls to underprivileged families and street-dwellers ahead of severe winter cold. Volunteers will help organize clothing packages, verify recipient sizes, and distribute warm tea and biscuits to street workers.",
+      "Providing warm blankets and essential winter wear to vulnerable families before the seasonal cold peak. Volunteers assist in sorting sizes, packaging blankets, and serving warm tea during distribution.",
     eventType: "Donation",
     thumbnail:
       "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=1200&q=80",
     location: "Gulshan, Dhaka",
     eventDate: "2026-11-05T10:00:00.000Z",
-    creatorName: "Rahim khan",
+    creatorName: "Rahim Khan",
     creatorEmail: "rahim.khan@example.com",
   },
   "demo-2": {
     _id: "demo-2",
-    title: "Street Children Book & Education Stationery Drive",
+    title: "Children Education & Stationery Drive",
     description:
-      "Distributing basic alphabetic books, notebooks, bags, and art supplies to encourage non-formal education for informal street children. Our team also sets up a 2-hour interactive drawing session to engage with the children and inspire their curiosity for schooling.",
+      "Distributing textbooks, notebooks, and creative art kits to support informal youth literacy. Volunteers help guide interactive reading sessions and distribute learning supplies.",
     eventType: "Education",
     thumbnail:
       "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=1200&q=80",
-    location: "new market, khulna",
+    location: "New Market, Khulna",
     eventDate: "2026-12-01T11:00:00.000Z",
     creatorName: "Nusrat Jahan",
     creatorEmail: "nusrat.jahan@example.com",
