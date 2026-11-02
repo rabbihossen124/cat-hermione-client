@@ -44,10 +44,24 @@ export default function RecentEventsSection() {
           const data = await res.json();
           if (Array.isArray(data) && data.length > 0) {
             setEvents(data);
+            return;
           }
         }
       } catch {
         // Fallback already pre-loaded
+      }
+
+      // Check localStorage for user-created custom events
+      try {
+        const local = localStorage.getItem("unityaid_custom_events");
+        if (local) {
+          const parsed = JSON.parse(local);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            setEvents([...fallbackEvents, ...parsed]);
+          }
+        }
+      } catch {
+        // ignore
       }
     };
     fetchRecent();

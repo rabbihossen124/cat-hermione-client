@@ -1,13 +1,20 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useSyncExternalStore } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import ThemeToggle from "./ThemeToggle";
 import { useAuth } from "@/context/AuthContext";
 
+// React 19 official zero-cascading-render mounted store
+const emptySubscribe = () => () => {};
+function useMounted() {
+  return useSyncExternalStore(emptySubscribe, () => true, () => false);
+}
+
 export default function Navbar() {
   const { user, logout } = useAuth();
+  const mounted = useMounted();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -66,7 +73,7 @@ export default function Navbar() {
           <ThemeToggle />
 
           {/* Conditional Login / Profile Picture Dropdown */}
-          {user ? (
+          {mounted && user ? (
             <div className="relative flex items-center gap-2" ref={dropdownRef}>
               {/* Profile Picture with Hover Tooltip Display Name */}
               <button
@@ -195,7 +202,7 @@ export default function Navbar() {
           >
             Upcoming Events
           </Link>
-          {user && (
+          {mounted && user && (
             <>
               <hr className="border-[var(--border)]" />
               <Link
