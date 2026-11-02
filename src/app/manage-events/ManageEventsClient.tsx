@@ -85,16 +85,30 @@ export default function ManageEventsClient() {
         const local = localStorage.getItem("unityaid_custom_events");
         const list: EventItem[] = local ? JSON.parse(local) : [];
         const userCreated = list.filter(
-          (e) => e.creatorEmail === user.email || e.creatorName === user.name
+          (e) =>
+            Boolean(
+              e.creatorEmail &&
+                user.email &&
+                e.creatorEmail.toLowerCase() === user.email.toLowerCase()
+            ) ||
+            Boolean(
+              e.creatorName &&
+                user.name &&
+                e.creatorName.toLowerCase() === user.name.toLowerCase()
+            )
         );
+
         if (userCreated.length > 0) {
           setEvents(userCreated);
-        } else {
-          // If no custom events yet, show default organizer drives for seamless demonstration
+        } else if (user.email?.toLowerCase() === "tanzim.volunteer@unityaid.org") {
+          // Only demo organizer Tanzim Hasan sees the demo drive
           setEvents(defaultOrganizerDrives);
+        } else {
+          // Any other user who hasn't hosted a drive sees the clean empty state
+          setEvents([]);
         }
       } catch {
-        setEvents(defaultOrganizerDrives);
+        setEvents([]);
       } finally {
         if (!ignore) {
           setIsLoading(false);
