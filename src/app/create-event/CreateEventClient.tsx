@@ -38,7 +38,7 @@ function useMounted() {
 
 export default function CreateEventClient() {
   const router = useRouter();
-  const { user, login } = useAuth();
+  const { user } = useAuth();
   const mounted = useMounted();
 
   // Lazy calculate tomorrow's date for strict future date validation (React 19 pure render)
@@ -59,15 +59,6 @@ export default function CreateEventClient() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
-
-  // Demo Login Helper for seamless testing if not logged in yet
-  const handleQuickDemoLogin = () => {
-    login({
-      name: "Tanzim Hasan",
-      email: "tanzim.volunteer@unityaid.org",
-      photoURL: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80",
-    });
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -184,20 +175,13 @@ export default function CreateEventClient() {
             </p>
           </div>
 
-          <div className="pt-2 flex flex-col gap-3">
+          <div className="pt-2">
             <Link
               href="/login?redirect=/create-event"
               className="btn-primary w-full text-xs sm:text-sm py-3"
             >
               Sign In to Your Account →
             </Link>
-            <button
-              type="button"
-              onClick={handleQuickDemoLogin}
-              className="btn-secondary w-full text-xs sm:text-sm py-3 cursor-pointer"
-            >
-              ⚡ Quick Demo Organizer Login
-            </button>
           </div>
         </div>
       </div>

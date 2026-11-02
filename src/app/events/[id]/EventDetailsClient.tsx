@@ -98,21 +98,28 @@ export default function EventDetailsClient({
   const { user } = useAuth();
 
   const [event, setEvent] = useState<EventItem | null>(() => fallbackMap[id] || null);
-  const [joined, setJoined] = useState<boolean>(() => {
+  const [joinedVersion, setJoinedVersion] = useState(0);
+
+  // An event is only joined if the user is currently logged in AND their email matches a joined record
+  const joined = useMemo(() => {
+    if (!user || !user.email) return false;
     if (typeof window === "undefined") return false;
     try {
       const storedJoined = localStorage.getItem("unityaid-joined-events");
       if (storedJoined) {
         const list: { eventId: string; userEmail?: string }[] = JSON.parse(storedJoined);
         return list.some(
-          (j) => j.eventId === id && (!user || j.userEmail === user.email)
+          (j) =>
+            j.eventId === id &&
+            Boolean(j.userEmail && j.userEmail.toLowerCase() === user.email.toLowerCase())
         );
       }
     } catch {
       return false;
     }
     return false;
-  });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, id, joinedVersion]);
   const [isLoading, setIsLoading] = useState(false);
   const [copied, setCopied] = useState(false);
   const [authWarning, setAuthWarning] = useState(false);
@@ -183,7 +190,7 @@ export default function EventDetailsClient({
       // ignore
     }
 
-    setJoined(true);
+    setJoinedVersion((v) => v + 1);
     setIsLoading(false);
   };
 
