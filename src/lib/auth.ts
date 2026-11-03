@@ -63,5 +63,18 @@ export const auth = betterAuth({
     process.env.BETTER_AUTH_URL ||
     (process.env.VERCEL_URL
       ? `https://${process.env.VERCEL_URL}`
-      : "http://localhost:3000"),
+      : "https://cat-hermione-client-five.vercel.app"),
+  trustedOrigins: [
+    "http://localhost:3000",
+    "https://*.vercel.app",
+    "https://*.vercel.com",
+    "https://cat-hermione-client-five.vercel.app",
+    "https://cat-hermione-client.vercel.app",
+    ...(process.env.BETTER_AUTH_URL ? [process.env.BETTER_AUTH_URL] : []),
+    ...(process.env.NEXT_PUBLIC_APP_URL ? [process.env.NEXT_PUBLIC_APP_URL] : []),
+    ...(process.env.VERCEL_URL ? [`https://${process.env.VERCEL_URL}`] : []),
+  ],
+  advanced: {
+    disableCSRFCheck: true,
+  },
 });

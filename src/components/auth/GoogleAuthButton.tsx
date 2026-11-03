@@ -92,18 +92,8 @@ export default function GoogleAuthButton({
         <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-700 dark:text-amber-400 text-[11px] leading-relaxed flex items-start gap-2 animate-in fade-in duration-150">
           <span className="text-sm shrink-0">ℹ️</span>
           <div>
-            <p className="font-bold">Google Sign-In Credentials Required</p>
-            <p className="text-[10px] opacity-90 mt-0.5">
-              To allow users to sign in with their own Google account popup, set{" "}
-              <code className="px-1 py-0.5 bg-black/10 dark:bg-white/10 rounded font-mono">
-                GOOGLE_CLIENT_ID
-              </code>{" "}
-              and{" "}
-              <code className="px-1 py-0.5 bg-black/10 dark:bg-white/10 rounded font-mono">
-                GOOGLE_CLIENT_SECRET
-              </code>{" "}
-              in your <code className="font-mono">.env.local</code> file.
-            </p>
+            <p className="font-bold">Google Sign-In Notice</p>
+            <p className="text-[10px] opacity-90 mt-0.5">{setupNotice}</p>
           </div>
         </div>
       )}

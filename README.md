@@ -1,7 +1,7 @@
 # 🤝 UnityAid — Social Development & Community Events Platform
 
-> **🌐 Live Website URL:** [https://unityaid-cat-hermione.vercel.app](https://unityaid-cat-hermione.vercel.app)  
-> *(Note: Replace with your final Vercel deployment URL)*  
+> **🌐 Live Frontend URL:** [https://cat-hermione-client-five.vercel.app](https://cat-hermione-client-five.vercel.app)  
+> **⚡ Live Backend API:** [https://cat-hermione-server-sigma.vercel.app](https://cat-hermione-server-sigma.vercel.app)  
 > **Course Track:** B14-A8_Cat-Hermione — Community-Driven Social Service Platform
 
 ---
