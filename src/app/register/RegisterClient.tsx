@@ -249,7 +249,7 @@ export default function RegisterClient() {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="e.g. tanzim.volunteer@unityaid.org"
+              placeholder="e.g. your.email@example.com"
               className="w-full px-4 py-3 rounded-2xl bg-[var(--background)] border border-[var(--border)] text-xs sm:text-sm text-[var(--foreground)] outline-none focus:border-[var(--primary)] transition-colors"
             />
           </div>

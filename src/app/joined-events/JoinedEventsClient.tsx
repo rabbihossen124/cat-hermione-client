@@ -25,21 +25,6 @@ export interface JoinedRecord {
   joinedAt: string;
 }
 
-const defaultJoinedDemo: JoinedRecord[] = [
-  {
-    _id: "demo-join-1",
-    eventId: "demo-1",
-    eventTitle: "Winter Clothes & Warm Blanket Drive",
-    eventDate: "2026-11-05T10:00:00.000Z",
-    location: "Gulshan 2 Circle, Dhaka",
-    eventType: "Donation",
-    thumbnail:
-      "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=800&q=80",
-    userEmail: "tanzim.volunteer@unityaid.org",
-    userName: "Tanzim Hasan",
-    joinedAt: "2026-11-01T12:00:00.000Z",
-  },
-];
 
 export default function JoinedEventsClient() {
   const { user } = useAuth();
@@ -91,19 +76,10 @@ export default function JoinedEventsClient() {
             j.userEmail.toLowerCase() === user.email.toLowerCase()
         );
 
-        if (userJoined.length > 0) {
-          const sorted = userJoined.sort(
-            (a, b) => new Date(a.eventDate).getTime() - new Date(b.eventDate).getTime()
-          );
-          setJoinedList(sorted);
-        } else {
-          // If demo user and no records, show default demo drive
-          if (user.email === "tanzim.volunteer@unityaid.org") {
-            setJoinedList(defaultJoinedDemo);
-          } else {
-            setJoinedList([]);
-          }
-        }
+        const sorted = userJoined.sort(
+          (a, b) => new Date(a.eventDate).getTime() - new Date(b.eventDate).getTime()
+        );
+        setJoinedList(sorted);
       } catch {
         setJoinedList([]);
       } finally {

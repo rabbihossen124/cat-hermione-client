@@ -13,21 +13,6 @@ function useMounted() {
   return React.useSyncExternalStore(emptySubscribe, () => true, () => false);
 }
 
-const defaultOrganizerDrives: EventItem[] = [
-  {
-    _id: "demo-1",
-    title: "Winter Clothes & Blanket Drive",
-    description:
-      "Providing warm blankets and essential winter wear to vulnerable families before the seasonal cold peak.",
-    eventType: "Donation",
-    thumbnail:
-      "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=800&q=80",
-    location: "Gulshan, Dhaka",
-    eventDate: "2026-11-05T10:00:00.000Z",
-    creatorName: "Tanzim Hasan",
-    creatorEmail: "tanzim.volunteer@unityaid.org",
-  },
-];
 
 export default function ManageEventsClient() {
   const { user } = useAuth();
@@ -99,15 +84,7 @@ export default function ManageEventsClient() {
             )
         );
 
-        if (userCreated.length > 0) {
-          setEvents(userCreated);
-        } else if (user.email?.toLowerCase() === "tanzim.volunteer@unityaid.org") {
-          // Only demo organizer Tanzim Hasan sees the demo drive
-          setEvents(defaultOrganizerDrives);
-        } else {
-          // Any other user who hasn't hosted a drive sees the clean empty state
-          setEvents([]);
-        }
+        setEvents(userCreated);
       } catch {
         setEvents([]);
       } finally {

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
 import { authClient } from "@/lib/auth-client";
 
 export interface User {
@@ -47,6 +47,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   // Active user: prefer Better-Auth session, fallback to local storage
   const user = sessionUser || localUser;
+
+  const sessionEmail = session?.user?.email;
+  const sessionName = session?.user?.name;
+  const sessionImage = session?.user?.image;
+
+  // Sync official Google OAuth session into localStorage for all components
+  useEffect(() => {
+    if (sessionEmail && typeof window !== "undefined") {
+      const u: User = {
+        name: sessionName || "Community Volunteer",
+        email: sessionEmail,
+        photoURL:
+          sessionImage ||
+          "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80",
+      };
+      try {
+        localStorage.setItem("unityaid_user", JSON.stringify(u));
+      } catch {
+        // ignore
+      }
+    }
+  }, [sessionEmail, sessionName, sessionImage]);
 
   const login = (userData: User, token?: string) => {
     setLocalUser(userData);
