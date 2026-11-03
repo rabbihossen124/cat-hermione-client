@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
+import { API_BASE_URL } from "@/lib/api";
 
 // React 19 zero-cascading-render mounted store
 const emptySubscribe = () => () => {};
@@ -59,7 +60,7 @@ export default function JoinedEventsClient() {
     const loadJoined = async () => {
       try {
         const token = localStorage.getItem("unityaid_token");
-        const res = await fetch("http://localhost:5000/api/joined-events/my", {
+        const res = await fetch(`${API_BASE_URL}/api/joined-events/my`, {
           headers: token ? { Authorization: `Bearer ${token}` } : {},
         });
         if (res.ok) {
@@ -130,7 +131,7 @@ export default function JoinedEventsClient() {
     try {
       const token = localStorage.getItem("unityaid_token");
       await fetch(
-        `http://localhost:5000/api/joined-events/${recordToLeave._id || recordToLeave.eventId}`,
+        `${API_BASE_URL}/api/joined-events/${recordToLeave._id || recordToLeave.eventId}`,
         {
           method: "DELETE",
           headers: token ? { Authorization: `Bearer ${token}` } : {},

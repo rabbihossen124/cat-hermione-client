@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 import { EventItem } from "@/components/events/EventCard";
+import { API_BASE_URL } from "@/lib/api";
 
 // React 19 official zero-cascading-render mounted store
 const emptySubscribe = () => () => {};
@@ -63,7 +64,7 @@ export default function ManageEventsClient() {
     const loadEvents = async () => {
       try {
         const token = localStorage.getItem("unityaid_token");
-        const res = await fetch("http://localhost:5000/api/events/my-events", {
+        const res = await fetch(`${API_BASE_URL}/api/events/my-events`, {
           headers: token ? { Authorization: `Bearer ${token}` } : {},
         });
         if (res.ok) {
@@ -152,7 +153,7 @@ export default function ManageEventsClient() {
     // 1. Send PUT request to Express Backend
     try {
       const token = localStorage.getItem("unityaid_token");
-      await fetch(`http://localhost:5000/api/events/${editingEvent._id}`, {
+      await fetch(`${API_BASE_URL}/api/events/${editingEvent._id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -197,7 +198,7 @@ export default function ManageEventsClient() {
     // 1. Send DELETE to Express Backend
     try {
       const token = localStorage.getItem("unityaid_token");
-      await fetch(`http://localhost:5000/api/events/${deletingId}`, {
+      await fetch(`${API_BASE_URL}/api/events/${deletingId}`, {
         method: "DELETE",
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       });

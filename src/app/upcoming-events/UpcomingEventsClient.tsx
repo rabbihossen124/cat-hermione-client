@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 import EventCard, { EventItem } from "@/components/events/EventCard";
+import { API_BASE_URL } from "@/lib/api";
 
 const initialUpcomingEvents: EventItem[] = [
   {
@@ -56,7 +57,7 @@ export default function UpcomingEventsClient() {
     const fetchEvents = async () => {
       try {
         setIsLoading(true);
-        const res = await fetch("http://localhost:5000/api/events");
+        const res = await fetch(`${API_BASE_URL}/api/events`);
         if (res.ok) {
           const data = await res.json();
           if (Array.isArray(data) && data.length > 0) {

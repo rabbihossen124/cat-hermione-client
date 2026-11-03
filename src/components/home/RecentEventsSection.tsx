@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import EventCard, { EventItem } from "@/components/events/EventCard";
+import { API_BASE_URL } from "@/lib/api";
 
 // High quality initial seed events matching the assignment prompt examples
 const fallbackEvents: EventItem[] = [
@@ -39,7 +40,7 @@ export default function RecentEventsSection() {
     // Attempt dynamic fetch from Express server (.limit(6))
     const fetchRecent = async () => {
       try {
-        const res = await fetch("http://localhost:5000/api/events/recent");
+        const res = await fetch(`${API_BASE_URL}/api/events/recent`);
         if (res.ok) {
           const data = await res.json();
           if (Array.isArray(data) && data.length > 0) {

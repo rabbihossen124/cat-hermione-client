@@ -6,6 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 import { EventItem } from "@/components/events/EventCard";
+import { API_BASE_URL } from "@/lib/api";
 
 const sampleImages = [
   {
@@ -120,7 +121,7 @@ export default function CreateEventClient() {
     // 1. Send POST request to backend API (Express + MongoDB)
     try {
       const token = localStorage.getItem("unityaid_token");
-      await fetch("http://localhost:5000/api/events", {
+      await fetch(`${API_BASE_URL}/api/events`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

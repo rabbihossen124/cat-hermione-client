@@ -6,6 +6,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import EventCard, { EventItem } from "@/components/events/EventCard";
+import { API_BASE_URL } from "@/lib/api";
 
 const fallbackMap: Record<string, EventItem> = {
   "demo-1": {
@@ -129,7 +130,7 @@ export default function EventDetailsClient({
     if (!fallbackMap[id]) {
       const fetchDetail = async () => {
         try {
-          const res = await fetch(`http://localhost:5000/api/events/${id}`);
+          const res = await fetch(`${API_BASE_URL}/api/events/${id}`);
           if (res.ok) {
             const data = await res.json();
             setEvent(data);
@@ -168,7 +169,7 @@ export default function EventDetailsClient({
     // 1. Try to send to Express Backend API
     try {
       const token = localStorage.getItem("unityaid_token");
-      await fetch("http://localhost:5000/api/joined-events", {
+      await fetch(`${API_BASE_URL}/api/joined-events`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
