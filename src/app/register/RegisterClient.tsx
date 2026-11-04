@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import { useToast } from "@/context/ToastContext";
 import { authClient } from "@/lib/auth-client";
 import GoogleAuthButton from "@/components/auth/GoogleAuthButton";
 
@@ -38,6 +39,7 @@ export default function RegisterClient() {
   const redirectTo = searchParams.get("redirect") || "/";
 
   const { user, login } = useAuth();
+  const toast = useToast();
   const mounted = useMounted();
 
   const [name, setName] = useState("");
@@ -119,10 +121,11 @@ export default function RegisterClient() {
         localStorage.setItem("unityaid_registered_users", JSON.stringify(accounts));
 
         login(userObj, `better-auth-jwt-${Date.now()}`);
+        toast.success("Account created successfully! Welcome to UnityAid 🎉");
         setSuccessMessage("Account created successfully! Welcome to UnityAid.");
         setTimeout(() => {
           router.push(redirectTo);
-        }, 1000);
+        }, 800);
         return;
       }
 
@@ -132,10 +135,11 @@ export default function RegisterClient() {
         photoURL: photoURL.trim(),
       };
       login(userObj, `better-auth-jwt-${Date.now()}`);
+      toast.success("Account created successfully! Welcome to UnityAid 🎉");
       setSuccessMessage("Account created successfully! Welcome to UnityAid.");
       setTimeout(() => {
         router.push(redirectTo);
-      }, 1000);
+      }, 800);
     } catch {
       // Offline fallback
       const userObj = {
@@ -153,10 +157,11 @@ export default function RegisterClient() {
       localStorage.setItem("unityaid_registered_users", JSON.stringify(accounts));
 
       login(userObj, `better-auth-jwt-${Date.now()}`);
+      toast.success("Account created successfully! Welcome to UnityAid 🎉");
       setSuccessMessage("Account registered successfully! Redirecting...");
       setTimeout(() => {
         router.push(redirectTo);
-      }, 1000);
+      }, 800);
     } finally {
       setIsSubmitting(false);
     }
@@ -208,7 +213,10 @@ export default function RegisterClient() {
           <GoogleAuthButton
             mode="signup"
             redirectTo={redirectTo}
-            onSuccess={() => setSuccessMessage("Registered with Google! Redirecting...")}
+            onSuccess={() => {
+              toast.success("Account registered with Google! Welcome 🎉");
+              setSuccessMessage("Registered with Google! Redirecting...");
+            }}
             onError={(err) => setErrorMessage(err)}
           />
 

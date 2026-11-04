@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/context/ThemeContext";
 import { AuthProvider } from "@/context/AuthContext";
+import { ToastProvider } from "@/context/ToastContext";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
@@ -36,11 +37,13 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col bg-[var(--background)] text-[var(--foreground)]" suppressHydrationWarning>
         <ThemeProvider>
           <AuthProvider>
-            <Navbar />
-            <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6">
-              {children}
-            </main>
-            <Footer />
+            <ToastProvider>
+              <Navbar />
+              <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6">
+                {children}
+              </main>
+              <Footer />
+            </ToastProvider>
           </AuthProvider>
         </ThemeProvider>
       </body>

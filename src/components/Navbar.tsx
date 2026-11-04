@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import ThemeToggle from "./ThemeToggle";
 import { useAuth } from "@/context/AuthContext";
+import { useToast } from "@/context/ToastContext";
 
 // React 19 official zero-cascading-render mounted store
 const emptySubscribe = () => () => {};
@@ -14,10 +15,17 @@ function useMounted() {
 
 export default function Navbar() {
   const { user, logout } = useAuth();
+  const toast = useToast();
   const mounted = useMounted();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const handleLogout = async () => {
+    await logout();
+    toast.info("Signed out successfully! See you soon 👋");
+    setDropdownOpen(false);
+  };
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -146,10 +154,7 @@ export default function Navbar() {
                   <div className="border-t border-[var(--border)] mt-1 pt-1">
                     <button
                       type="button"
-                      onClick={() => {
-                        logout();
-                        setDropdownOpen(false);
-                      }}
+                      onClick={handleLogout}
                       className="w-full text-left flex items-center gap-2 px-3 py-2 text-xs font-semibold rounded-xl text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20 transition-colors cursor-pointer"
                     >
                       <span>🚪</span> Logout
@@ -161,7 +166,7 @@ export default function Navbar() {
               {/* Direct Logout Button */}
               <button
                 type="button"
-                onClick={logout}
+                onClick={handleLogout}
                 className="hidden sm:inline-flex btn-outline text-xs py-1.5 px-3"
               >
                 Logout

@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import { useToast } from "@/context/ToastContext";
 import { authClient } from "@/lib/auth-client";
 import GoogleAuthButton from "@/components/auth/GoogleAuthButton";
 
@@ -19,6 +20,7 @@ export default function LoginClient() {
   const redirectTo = searchParams.get("redirect") || "/";
 
   const { user, login } = useAuth();
+  const toast = useToast();
   const mounted = useMounted();
 
   const [email, setEmail] = useState("");
@@ -82,10 +84,11 @@ export default function LoginClient() {
       }
 
       // Successful Better-Auth login
+      toast.success("Signed in successfully! Welcome back 👋");
       setSuccessMessage("Welcome back! Redirecting...");
       setTimeout(() => {
         router.push(redirectTo);
-      }, 800);
+      }, 600);
     } catch {
       // Offline or network fallback
       const localAccountsStr = localStorage.getItem("unityaid_registered_users");
@@ -100,10 +103,11 @@ export default function LoginClient() {
           photoURL: found.photoURL,
         };
         login(userObj, `better-auth-jwt-${Date.now()}`);
+        toast.success("Signed in successfully! Welcome back 👋");
         setSuccessMessage("Signed in successfully! Redirecting...");
         setTimeout(() => {
           router.push(redirectTo);
-        }, 800);
+        }, 600);
       } else {
         // Allow seamless login with any valid formatted email & password for examiner testing
         const derivedName = email
@@ -117,10 +121,11 @@ export default function LoginClient() {
             "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80",
         };
         login(userObj, `better-auth-jwt-${Date.now()}`);
+        toast.success("Signed in successfully! Welcome back 👋");
         setSuccessMessage("Signed in successfully! Redirecting...");
         setTimeout(() => {
           router.push(redirectTo);
-        }, 800);
+        }, 600);
       }
     } finally {
       setIsSubmitting(false);
@@ -173,7 +178,10 @@ export default function LoginClient() {
           <GoogleAuthButton
             mode="signin"
             redirectTo={redirectTo}
-            onSuccess={() => setSuccessMessage("Signed in with Google! Redirecting...")}
+            onSuccess={() => {
+              toast.success("Signed in with Google! Welcome back 👋");
+              setSuccessMessage("Signed in with Google! Redirecting...");
+            }}
             onError={(err) => setErrorMessage(err)}
           />
 

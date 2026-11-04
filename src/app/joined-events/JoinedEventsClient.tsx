@@ -4,6 +4,8 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
+import { useToast } from "@/context/ToastContext";
+import { notifyVolunteerCountChange } from "@/lib/volunteerCount";
 import { API_BASE_URL } from "@/lib/api";
 
 // React 19 zero-cascading-render mounted store
@@ -28,6 +30,7 @@ export interface JoinedRecord {
 
 export default function JoinedEventsClient() {
   const { user } = useAuth();
+  const { toast } = useToast();
   const mounted = useMounted();
 
   const [joinedList, setJoinedList] = useState<JoinedRecord[]>([]);
@@ -137,6 +140,8 @@ export default function JoinedEventsClient() {
 
     // 3. Update local state
     setJoinedList((prev) => prev.filter((j) => j.eventId !== recordToLeave.eventId));
+    notifyVolunteerCountChange();
+    toast.info("Volunteer registration canceled! 👋");
     setFeedbackMessage(
       `You have withdrawn your volunteer registration for "${recordToLeave.eventTitle}".`
     );

@@ -5,6 +5,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import { useToast } from "@/context/ToastContext";
+import { getEventVolunteerCount, notifyVolunteerCountChange } from "@/lib/volunteerCount";
 import EventCard, { EventItem } from "@/components/events/EventCard";
 import { API_BASE_URL } from "@/lib/api";
 
@@ -97,9 +99,27 @@ export default function EventDetailsClient({
   const { id } = use(params);
   const router = useRouter();
   const { user } = useAuth();
+  const { toast } = useToast();
 
   const [event, setEvent] = useState<EventItem | null>(() => fallbackMap[id] || null);
   const [joinedVersion, setJoinedVersion] = useState(0);
+  const [volunteerCount, setVolunteerCount] = useState<number>(() =>
+    getEventVolunteerCount(id)
+  );
+  const [isCancelling, setIsCancelling] = useState(false);
+
+  useEffect(() => {
+    const handleCountUpdate = () => {
+      setVolunteerCount(getEventVolunteerCount(id));
+    };
+
+    window.addEventListener("unityaid-volunteer-change", handleCountUpdate);
+    window.addEventListener("storage", handleCountUpdate);
+    return () => {
+      window.removeEventListener("unityaid-volunteer-change", handleCountUpdate);
+      window.removeEventListener("storage", handleCountUpdate);
+    };
+  }, [id]);
 
   // An event is only joined if the user is currently logged in AND their email matches a joined record
   const joined = useMemo(() => {
@@ -191,8 +211,47 @@ export default function EventDetailsClient({
       // ignore
     }
 
+    notifyVolunteerCountChange();
+    toast.success("Successfully joined event as volunteer! 🎉");
     setJoinedVersion((v) => v + 1);
     setIsLoading(false);
+  };
+
+  const handleCancelJoin = async () => {
+    if (!user || !user.email) return;
+    setIsCancelling(true);
+
+    try {
+      const token = localStorage.getItem("unityaid_token");
+      await fetch(`${API_BASE_URL}/api/joined-events/${event?._id || id}`, {
+        method: "DELETE",
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      });
+    } catch {
+      // Backend offline fallback
+    }
+
+    try {
+      const existing = localStorage.getItem("unityaid-joined-events");
+      if (existing) {
+        const list: { eventId: string; userEmail?: string }[] = JSON.parse(existing);
+        const filtered = list.filter(
+          (j) =>
+            !(
+              j.eventId === (event?._id || id) &&
+              j.userEmail?.toLowerCase() === user.email!.toLowerCase()
+            )
+        );
+        localStorage.setItem("unityaid-joined-events", JSON.stringify(filtered));
+      }
+    } catch {
+      // ignore
+    }
+
+    notifyVolunteerCountChange();
+    toast.info("Volunteer spot canceled! 👋");
+    setJoinedVersion((v) => v + 1);
+    setIsCancelling(false);
   };
 
   const handleCopyLink = () => {
@@ -288,6 +347,13 @@ export default function EventDetailsClient({
             </span>
           </div>
 
+          {/* Real-time Volunteer Count Badge */}
+          <div className="absolute top-4 right-4">
+            <span className="badge-pill bg-black/75 backdrop-blur-md text-white text-xs font-extrabold shadow-md flex items-center gap-1.5 border border-white/20">
+              <span>👥</span> {volunteerCount} {volunteerCount === 1 ? "Volunteer Joined" : "Volunteers Joined"}
+            </span>
+          </div>
+
           {/* Title & Date Overlay */}
           <div className="absolute bottom-4 left-4 right-4 text-white space-y-2">
             <span className="badge-pill bg-white/20 backdrop-blur-md text-white text-xs font-semibold">
@@ -302,7 +368,7 @@ export default function EventDetailsClient({
         {/* Content Body */}
         <div className="p-6 sm:p-10 space-y-8">
           {/* Key Facts Strip */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 p-4 rounded-2xl bg-[var(--accent)] border border-[var(--border)]">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-4 rounded-2xl bg-[var(--accent)] border border-[var(--border)]">
             <div className="space-y-1">
               <span className="text-[11px] font-bold text-[var(--muted)] uppercase tracking-wider">
                 Location
@@ -326,6 +392,14 @@ export default function EventDetailsClient({
               <p className="text-xs sm:text-sm font-extrabold text-[#0D9488] flex items-center gap-1">
                 <span className="w-2 h-2 rounded-full bg-[#0D9488]" />
                 {joined ? "Volunteer Registered ✓" : "Open for Volunteers"}
+              </p>
+            </div>
+            <div className="space-y-1">
+              <span className="text-[11px] font-bold text-[var(--muted)] uppercase tracking-wider">
+                Volunteers Joined
+              </span>
+              <p className="text-xs sm:text-sm font-extrabold text-[#FF6B00] flex items-center gap-1">
+                <span>👥</span> {volunteerCount} {volunteerCount === 1 ? "Volunteer" : "Volunteers"}
               </p>
             </div>
           </div>
@@ -409,29 +483,43 @@ export default function EventDetailsClient({
                   ✓ You are registered as an active volunteer for this drive!
                 </span>
               ) : (
-                <span>Join our grassroots team and make a direct difference in Dhaka.</span>
+                <span>Join our grassroots team and make a direct difference in Bangladesh.</span>
               )}
             </div>
 
-            <div className="flex items-center gap-3 w-full sm:w-auto">
-              <button
-                type="button"
-                onClick={handleJoin}
-                disabled={joined || isLoading}
-                className={`w-full sm:w-auto text-xs sm:text-sm py-3 px-8 font-bold rounded-full transition-all cursor-pointer shadow-md ${
-                  joined
-                    ? "bg-[#0D9488] text-white cursor-default"
-                    : "btn-primary"
-                }`}
-              >
-                {isLoading
-                  ? "Registering..."
-                  : joined
-                  ? "Registered as Volunteer ✓"
-                  : !user
-                  ? "Log in to Join Event →"
-                  : "Join This Event"}
-              </button>
+            <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
+              {joined ? (
+                <>
+                  <button
+                    type="button"
+                    disabled
+                    className="w-full sm:w-auto text-xs sm:text-sm py-3 px-6 font-bold rounded-full bg-emerald-600 text-white shadow-md flex items-center justify-center gap-2 cursor-default"
+                  >
+                    <span>✓</span> Registered as Volunteer
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleCancelJoin}
+                    disabled={isCancelling}
+                    className="w-full sm:w-auto text-xs sm:text-sm py-3 px-6 font-bold rounded-full bg-rose-500/10 hover:bg-rose-500/20 text-rose-600 dark:text-rose-400 border border-rose-500/30 transition-all cursor-pointer shadow-sm whitespace-nowrap"
+                  >
+                    {isCancelling ? "Canceling..." : "Cancel Volunteer Spot ✕"}
+                  </button>
+                </>
+              ) : (
+                <button
+                  type="button"
+                  onClick={handleJoin}
+                  disabled={isLoading}
+                  className="btn-primary w-full sm:w-auto text-xs sm:text-sm py-3 px-8 font-bold rounded-full transition-all cursor-pointer shadow-md"
+                >
+                  {isLoading
+                    ? "Registering..."
+                    : !user
+                    ? "Log in to Join Event →"
+                    : "Register as Volunteer →"}
+                </button>
+              )}
               <Link href="/upcoming-events" className="btn-outline text-xs sm:text-sm py-3 px-6 whitespace-nowrap">
                 Back to Drives
               </Link>

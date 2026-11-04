@@ -1,6 +1,9 @@
-import React from "react";
+"use client";
+
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { getEventVolunteerCount } from "@/lib/volunteerCount";
 
 export interface EventItem {
   _id: string;
@@ -15,6 +18,23 @@ export interface EventItem {
 }
 
 export default function EventCard({ event }: { event: EventItem }) {
+  const [volunteerCount, setVolunteerCount] = useState<number>(() =>
+    getEventVolunteerCount(event._id)
+  );
+
+  useEffect(() => {
+    const handleCountUpdate = () => {
+      setVolunteerCount(getEventVolunteerCount(event._id));
+    };
+
+    window.addEventListener("unityaid-volunteer-change", handleCountUpdate);
+    window.addEventListener("storage", handleCountUpdate);
+    return () => {
+      window.removeEventListener("unityaid-volunteer-change", handleCountUpdate);
+      window.removeEventListener("storage", handleCountUpdate);
+    };
+  }, [event._id]);
+
   // Format readable date
   const dateObj = new Date(event.eventDate);
   const formattedDate = !isNaN(dateObj.getTime())
@@ -72,6 +92,13 @@ export default function EventCard({ event }: { event: EventItem }) {
             </span>
           </div>
 
+          {/* Real-time Volunteer Count Pill Badge */}
+          <div className="absolute top-3 right-3">
+            <span className="badge-pill bg-black/70 backdrop-blur-md text-white text-[10px] font-extrabold shadow-md flex items-center gap-1 border border-white/20">
+              <span>👥</span> {volunteerCount} {volunteerCount === 1 ? "Volunteer" : "Volunteers"}
+            </span>
+          </div>
+
           {/* Date Pill Badge */}
           <div className="absolute bottom-3 left-3">
             <span className="badge-pill bg-white/95 dark:bg-slate-900/90 backdrop-blur-md text-slate-900 dark:text-slate-100 text-[11px] font-bold shadow-md">
@@ -103,16 +130,15 @@ export default function EventCard({ event }: { event: EventItem }) {
         </div>
       </div>
 
-      {/* Card Action Button */}
+      {/* Action Footer */}
       <div className="p-5 pt-0">
         <Link
           href={`/events/${event._id}`}
-          className="btn-primary w-full text-xs py-2.5 text-center shadow-xs"
+          className="btn-primary w-full text-center text-xs py-2.5 px-4 font-bold block"
         >
-          View Event Details
+          View Details & Volunteer →
         </Link>
       </div>
     </div>
   );
 }
-
